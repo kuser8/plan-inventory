@@ -2,7 +2,15 @@
 // Service/WS names here intentionally mirror the backend exactly (see
 // ANALYSIS.md) so a rename on either side is easy to spot.
 
+// Upstream Simple Inventory's own domain — owns items/inventories/
+// add_item/list_items/etc. We never touch its files or hass.data.
 export const DOMAIN = 'simple_inventory';
+
+// Our own standalone companion integration (custom_components/
+// simple_inventory_structure/) — owns the Room/Furniture/Shelf structure
+// storage and its WS commands, under its own domain prefix so there's no
+// ambiguity about which integration a given WS command type belongs to.
+export const STRUCTURE_DOMAIN = 'simple_inventory_structure';
 
 // Joins/splits a structure path (Room / Furniture / Shelf) into the single
 // `location` string field the backend already supports. Spaces around the
@@ -23,9 +31,9 @@ export const WS_COMMANDS = {
   LIST_ITEMS: `${DOMAIN}/list_items`,
   SUBSCRIBE: `${DOMAIN}/subscribe`,
   LOOKUP_BY_BARCODE: `${DOMAIN}/lookup_by_barcode`,
-  GET_STRUCTURE: `${DOMAIN}/get_structure`,
-  SET_STRUCTURE: `${DOMAIN}/set_structure`,
-  SUBSCRIBE_STRUCTURE: `${DOMAIN}/subscribe_structure`,
+  GET_STRUCTURE: `${STRUCTURE_DOMAIN}/get_structure`,
+  SET_STRUCTURE: `${STRUCTURE_DOMAIN}/set_structure`,
+  SUBSCRIBE_STRUCTURE: `${STRUCTURE_DOMAIN}/subscribe_structure`,
 };
 
 export const LEVEL = {
