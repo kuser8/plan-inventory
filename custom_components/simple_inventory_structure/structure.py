@@ -1,23 +1,23 @@
 """Location hierarchy (Room -> Furniture -> Shelf) storage and WebSocket API.
 
-This module is an *addition* alongside the upstream Simple Inventory
-integration (github.com/blaineventurine/simple_inventory) — it does not
-modify any existing item/inventory logic. It stores a flat, parent-
-referencing list of "structure nodes" (rooms, furniture, shelves) via
-``homeassistant.helpers.storage.Store``, independent of upstream's SQLite
-item storage (see ANALYSIS.md), and exposes it over a small set of
-``simple_inventory/*`` WebSocket commands that follow the same
-registration pattern used by upstream's own ``websocket_api.py``
-(``@websocket_api.websocket_command`` + ``@websocket_api.async_response``/
-``@callback``, one ``async_register_*`` entry point called from
-``__init__.py``).
+This is the core of the standalone "Simple Inventory: Структура мест"
+integration (domain ``simple_inventory_structure``) — a companion to, but
+fully independent of, the upstream Simple Inventory integration
+(github.com/blaineventurine/simple_inventory). It does not modify any
+existing item/inventory logic, does not touch upstream's files, and does
+not share upstream's ``hass.data[DOMAIN]`` namespace or storage. It stores
+a flat, parent-referencing list of "structure nodes" (rooms, furniture,
+shelves) via ``homeassistant.helpers.storage.Store`` and exposes it over a
+small set of ``simple_inventory_structure/*`` WebSocket commands that
+follow the same registration pattern used by upstream's own
+``websocket_api.py`` (``@websocket_api.websocket_command`` +
+``@websocket_api.async_response``/``@callback``, one ``async_register_*``
+entry point called once from ``__init__.py``).
 
-Install: drop this file into
-``custom_components/simple_inventory/structure.py`` alongside the existing
-integration files, then apply the two-line patch described in
-``INSTALL.md`` to ``__init__.py`` so ``async_register_structure_websocket_
-commands(hass)`` is called once, next to upstream's own
-``async_register_websocket_commands(hass)`` call.
+Install: via HACS (custom repository, "Integration" category) or by
+copying this whole ``custom_components/simple_inventory_structure/``
+folder into ``<config>/custom_components/``, then adding the integration
+from Settings → Devices & Services → Add Integration. See INSTALL.md.
 """
 
 from __future__ import annotations
@@ -34,13 +34,9 @@ from homeassistant.helpers import storage
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
-
-# Distinct from upstream's own (now legacy/vestigial) STORAGE_KEY =
-# "simple_inventory.storage" (const.py) — that key is still referenced by
-# their one-shot SQLite migration loader, so we must not reuse it.
 STRUCTURE_STORAGE_KEY: Final = "simple_inventory_structure"
 STRUCTURE_STORAGE_VERSION: Final = 1
-STRUCTURE_UPDATED_EVENT: Final = f"{DOMAIN}_structure_updated"
+STRUCTURE_UPDATED_EVENT: Final = f"{DOMAIN}_updated"
 
 LEVEL_ROOM: Final = 0
 LEVEL_FURNITURE: Final = 1
@@ -49,9 +45,9 @@ VALID_LEVELS: Final = (LEVEL_ROOM, LEVEL_FURNITURE, LEVEL_SHELF)
 
 _EMPTY_STRUCTURE: Final[dict[str, Any]] = {"version": 1, "nodes": []}
 
-# hass.data[DOMAIN] keys owned by this module (kept distinct from upstream's
-# "coordinators" / "repository" / "services_registered" / etc. keys so we
-# never collide with their layout).
+# hass.data[DOMAIN] keys owned by this module. This domain (own custom
+# component) is never shared with any other integration's hass.data entry,
+# so these just need to be internally consistent.
 _DATA_STORE: Final = "structure_store"
 _DATA_LOCK: Final = "structure_lock"
 

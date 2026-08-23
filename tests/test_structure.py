@@ -15,8 +15,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from custom_components.simple_inventory import structure
-from custom_components.simple_inventory.structure import (
+from custom_components.simple_inventory_structure import structure
+from custom_components.simple_inventory_structure.structure import (
     StructureValidationError,
     validate_structure,
 )
@@ -296,7 +296,7 @@ def test_handle_subscribe_structure_registers_listener(
 def test_async_register_structure_websocket_commands_registers_three_commands() -> None:
     hass = MagicMock()
     with patch(
-        "custom_components.simple_inventory.structure.websocket_api.async_register_command"
+        "custom_components.simple_inventory_structure.structure.websocket_api.async_register_command"
     ) as mock_register:
         structure.async_register_structure_websocket_commands(hass)
 

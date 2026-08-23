@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Simple Inventory: Location Structure",
+        "description": "Adds a three-level location hierarchy (Room → Furniture → Shelf) for the inventory-structure-suite Lovelace cards. Does not modify the Simple Inventory integration and does not require it to be installed. Nothing to configure — click Submit to create the entry."
+      }
+    },
+    "abort": {
+      "already_configured": "Already configured (only one instance is allowed)."
+    }
+  }
+}
