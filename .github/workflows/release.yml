@@ -1,0 +1,45 @@
+name: Release
+
+# Builds the four card bundles and publishes them as a GitHub Release
+# whenever a "vX.Y.Z" tag is pushed — HACS (Plugin category) downloads
+# `inventory-structure-suite.zip` from the release, per hacs.json's
+# "zip_release"/"filename". The individual dist/*.js files are attached
+# too, for anyone installing by hand without HACS.
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Package plugin zip
+        run: |
+          cd dist
+          zip -r ../inventory-structure-suite.zip .
+          cd ..
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            inventory-structure-suite.zip
+            dist/inventory-list-card.js
+            dist/inventory-add-card.js
+            dist/inventory-view-card.js
+            dist/inventory-structure-card.js
+          generate_release_notes: true
