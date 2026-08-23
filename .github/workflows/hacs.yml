@@ -1,1 +1,32 @@
 name: HACS Validation
+
+# This repo hosts two independent HACS categories: the Integration
+# (custom_components/simple_inventory_structure) and the Plugin (the four
+# built Lovelace cards, released as inventory-structure-suite.zip — see
+# release.yml). Both are validated here since a user can add this repo to
+# HACS as either category.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  hacs-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hacs/action@main
+        with:
+          category: integration
+
+  hacs-plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hacs/action@main
+        with:
+          category: plugin
