@@ -677,14 +677,15 @@ const o = /* @__PURE__ */ new WeakMap(), n2 = e$1(class extends f {
   }
 });
 const DOMAIN = "simple_inventory";
+const STRUCTURE_DOMAIN = "simple_inventory_structure";
 const PATH_SEP = " / ";
 const SERVICES = {
   ADD_ITEM: "add_item"
 };
 const WS_COMMANDS = {
   LIST_ITEMS: `${DOMAIN}/list_items`,
-  GET_STRUCTURE: `${DOMAIN}/get_structure`,
-  SUBSCRIBE_STRUCTURE: `${DOMAIN}/subscribe_structure`
+  GET_STRUCTURE: `${STRUCTURE_DOMAIN}/get_structure`,
+  SUBSCRIBE_STRUCTURE: `${STRUCTURE_DOMAIN}/subscribe_structure`
 };
 function cleanServiceData(obj) {
   const out = {};

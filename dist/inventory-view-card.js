@@ -745,6 +745,7 @@ function registerCard({ tag, elementClass, editorTag, editorClass, cardConfig })
   }
 }
 const DOMAIN = "simple_inventory";
+const STRUCTURE_DOMAIN = "simple_inventory_structure";
 const SERVICES = {
   INCREMENT_ITEM: "increment_item",
   DECREMENT_ITEM: "decrement_item"
@@ -752,8 +753,8 @@ const SERVICES = {
 const WS_COMMANDS = {
   LIST_ITEMS: `${DOMAIN}/list_items`,
   SUBSCRIBE: `${DOMAIN}/subscribe`,
-  GET_STRUCTURE: `${DOMAIN}/get_structure`,
-  SUBSCRIBE_STRUCTURE: `${DOMAIN}/subscribe_structure`
+  GET_STRUCTURE: `${STRUCTURE_DOMAIN}/get_structure`,
+  SUBSCRIBE_STRUCTURE: `${STRUCTURE_DOMAIN}/subscribe_structure`
 };
 const LEVEL = {
   ROOM: 0,

@@ -736,15 +736,16 @@ const COMMON = {
   confirm: "Подтвердить"
 };
 const DOMAIN = "simple_inventory";
+const STRUCTURE_DOMAIN = "simple_inventory_structure";
 const PATH_SEP = " / ";
 const SERVICES = {
   UPDATE_ITEM: "update_item"
 };
 const WS_COMMANDS = {
   LIST_ITEMS: `${DOMAIN}/list_items`,
-  GET_STRUCTURE: `${DOMAIN}/get_structure`,
-  SET_STRUCTURE: `${DOMAIN}/set_structure`,
-  SUBSCRIBE_STRUCTURE: `${DOMAIN}/subscribe_structure`
+  GET_STRUCTURE: `${STRUCTURE_DOMAIN}/get_structure`,
+  SET_STRUCTURE: `${STRUCTURE_DOMAIN}/set_structure`,
+  SUBSCRIBE_STRUCTURE: `${STRUCTURE_DOMAIN}/subscribe_structure`
 };
 const LEVEL = {
   ROOM: 0,
