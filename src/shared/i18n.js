@@ -1,0 +1,40 @@
+// Single dictionary of UI strings shared by all four cards, per the task's
+// localization requirement: don't scatter hardcoded Russian text around —
+// keep one place to change/extend it. Each card additionally has its own
+// small `strings.js` for card-specific text; both are plain objects (no
+// runtime i18n framework) since this suite targets Russian-only UI.
+export const COMMON = {
+  search: 'Поиск',
+  searchByName: 'Поиск по названию',
+  category: 'Категория',
+  location: 'Место',
+  room: 'Комната',
+  furniture: 'Мебель',
+  shelf: 'Полка/ящик',
+  all: 'Все',
+  lowStock: 'Мало',
+  expiringSoon: 'Истекает',
+  quantity: 'Количество',
+  unit: 'Единица',
+  barcode: 'Штрихкод',
+  expiryDate: 'Срок годности',
+  price: 'Цена',
+  description: 'Описание',
+  inventory: 'Инвентарь',
+  save: 'Сохранить',
+  cancel: 'Отмена',
+  add: 'Добавить',
+  delete: 'Удалить',
+  rename: 'Переименовать',
+  edit: 'Изменить',
+  close: 'Закрыть',
+  loading: 'Загрузка…',
+  noItems: 'Ничего не найдено',
+  scan: 'Сканировать',
+  scanBarcode: 'Сканировать штрихкод',
+  manualBarcode: 'Ввести штрихкод вручную',
+  find: 'Найти',
+  errorGeneric: 'Произошла ошибка',
+  confirm: 'Подтвердить',
+  items: 'предметов',
+};

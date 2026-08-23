@@ -1,0 +1,37 @@
+{
+  "name": "inventory-structure-suite",
+  "version": "0.1.0",
+  "description": "Четыре Lovelace-карточки (список, добавление, просмотр, редактор структуры) поверх Simple Inventory для Home Assistant, с трёхуровневой структурой хранения Комната → Мебель → Полка",
+  "author": "kloun8@gmail.com",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kloun8/inventory-structure-suite.git"
+  },
+  "keywords": [
+    "home-assistant",
+    "lovelace",
+    "custom-card",
+    "inventory",
+    "simple-inventory"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist && mkdir -p dist",
+    "build:list": "CARD=list vite build",
+    "build:add": "CARD=add vite build",
+    "build:view": "CARD=view vite build",
+    "build:structure": "CARD=structure vite build",
+    "build": "npm run clean && npm run build:list && npm run build:add && npm run build:view && npm run build:structure",
+    "dev": "CARD=list vite build --watch"
+  },
+  "devDependencies": {
+    "terser": "^5.41.0",
+    "vite": "^5.4.11"
+  },
+  "dependencies": {
+    "@ericblade/quagga2": "^1.12.1",
+    "lit": "^3.3.0"
+  }
+}
