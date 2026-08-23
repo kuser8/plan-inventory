@@ -1,14 +1,14 @@
 {
   "name": "inventory-structure-suite",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Четыре Lovelace-карточки (список, добавление, просмотр, редактор структуры) поверх Simple Inventory для Home Assistant, с трёхуровневой структурой хранения Комната → Мебель → Полка",
   "author": "kloun8@gmail.com",
-  "license": "MIT",
+  "license": "Unlicense",
   "type": "module",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/kloun8/inventory-structure-suite.git"
+    "url": "https://github.com/kuser8/plan-inventory.git"
   },
   "keywords": [
     "home-assistant",
