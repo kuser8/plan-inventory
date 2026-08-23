@@ -1,15 +1,26 @@
 # Inventory Structure Suite
 
+[![HACS Custom][hacs-shield]][hacs-url]
+[![HACS Validation][hacs-action-shield]][hacs-action-url]
+[![Hassfest][hassfest-shield]][hassfest-url]
+[![Релиз][release-shield]][release-url]
+
 Надстройка над [Simple Inventory](https://github.com/blaineventurine/simple_inventory) (backend-интеграция
 Home Assistant) и [simple-inventory-card](https://github.com/blaineventurine/simple-inventory-card)
 (родная Lovelace-карточка) — оба проекта авторства [Blaine Venturine](https://github.com/blaineventurine),
 распространяются по лицензии MIT. Эта надстройка **не форкает и не изменяет их логику учёта товаров** —
 она добавляет:
 
-1. Небольшой backend-модуль (`structure.py`), который хранит трёхуровневый справочник мест
-   **Комната → Мебель → Полка/ящик** и отдаёт его по WebSocket.
+1. Отдельную (standalone) интеграцию Home Assistant **«Simple Inventory: Структура мест»**
+   (`custom_components/simple_inventory_structure/`, свой домен, своя запись конфигурации через
+   обычный UI-мастер «Добавить интеграцию»), которая хранит трёхуровневый справочник мест
+   **Комната → Мебель → Полка/ящик** и отдаёт его по WebSocket. Она ничего не патчит и не меняет в
+   уже установленной Simple Inventory — устанавливается и удаляется полностью независимо.
 2. Четыре независимые Lovelace-карточки, которые используют существующие сервисы/WebSocket-команды
-   Simple Inventory (`add_item`, `list_items`, `scan_barcode` и т.д.) и наш новый справочник структуры.
+   Simple Inventory (`add_item`, `list_items`, `scan_barcode` и т.д.) и WebSocket-команды нашей
+   новой интеграции структуры.
+
+Ставится через HACS как два обычных дополнения (Integration + Plugin) — см. [`INSTALL.md`](./INSTALL.md).
 
 Из уважения к оригинальному проекту: если вам не нужна трёхуровневая структура мест — просто используйте
 [simple-inventory-card](https://github.com/blaineventurine/simple-inventory-card) как есть, она полнее
@@ -118,8 +129,8 @@ collapsed_by_default: false
 
 ### D. `inventory-structure-card` — редактор структуры
 
-Единственное место, где создаётся/переименовывается/удаляется справочник мест. Пишет через WS-команды
-`simple_inventory/set_structure`.
+Единственное место, где создаётся/переименовывается/удаляется справочник мест. Пишет через WS-команду
+`simple_inventory_structure/set_structure`.
 
 ```yaml
 type: custom:inventory-structure-card
@@ -162,15 +173,19 @@ recorder:
 ## Структура репозитория
 
 ```
-inventory-structure-suite/
+plan-inventory/
 ├─ ANALYSIS.md                      # разбор upstream-репозиториев (Фаза 0)
 ├─ README.md                        # этот файл
-├─ INSTALL.md                       # пошаговая установка
+├─ INSTALL.md                       # пошаговая установка и настройка
+├─ hacs.json                        # метаданные для HACS (Integration + Plugin в одном репо)
+├─ .github/workflows/               # hassfest.yml, hacs.yml, release.yml (сборка дистрибутивов по тегу)
 ├─ reference/                       # копии ключевых upstream-файлов для справки
-├─ backend/
-│  └─ custom_components/simple_inventory/
-│     └─ structure.py               # новый модуль: хранилище структуры + WS-команды
-│  └─ tests/test_structure.py       # юнит-тесты структуры (validate/Store round-trip/WS-хендлеры)
+├─ custom_components/
+│  └─ simple_inventory_structure/   # отдельная интеграция: хранилище структуры + WS-команды
+│     ├─ __init__.py, config_flow.py, const.py, manifest.json, structure.py
+│     ├─ strings.json
+│     └─ translations/{en,ru}.json
+├─ tests/                           # юнит-тесты интеграции (structure.py, config_flow.py)
 ├─ src/
 │  ├─ shared/                       # общий JS-слой (api, structureTree, path, styles, i18n, ...)
 │  ├─ list-card/                    # Карточка A
@@ -184,19 +199,23 @@ inventory-structure-suite/
 
 ## Тесты backend
 
-`backend/tests/test_structure.py` покрывает `validate_structure` (все правила валидации), round-trip
-через `Store` (замокан, без реального диска) и WS-хендлеры (`_handle_get_structure`,
+`tests/test_structure.py` покрывает `validate_structure` (все правила валидации), round-trip через
+`Store` (замокан, без реального диска) и WS-хендлеры (`_handle_get_structure`,
 `_handle_set_structure`, `_handle_subscribe_structure`), в стиле `tests/test_websocket_api.py`
-апстрима. Запускаются той же связкой, что и тесты самой интеграции:
+апстрима Simple Inventory. `tests/test_config_flow.py` проверяет мастер добавления интеграции
+(создание единственной записи, отказ при повторном добавлении). Запускаются той же связкой, что и
+тесты Simple Inventory:
 
 ```bash
-pip install -r requirements-dev.txt  # из репозитория simple_inventory: pytest,
-                                      # pytest-homeassistant-custom-component, hassil
-pytest backend/tests/
+pip install pytest pytest-homeassistant-custom-component
+pytest tests/
 ```
 
-Мы не меняем `manifest.json` апстрима и не присваиваем этому патчу отдельный номер версии — это не
-форк, а точечное дополнение поверх установленной интеграции (см. `INSTALL.md`, вариант А).
+Это полноценная отдельная интеграция со своим `manifest.json` и собственным номером версии — не
+патч и не форк Simple Inventory (см. «Часть 1» замысла проекта: изначальный вариант с точечным
+патчем `__init__.py` апстрима был заменён на независимую интеграцию именно для того, чтобы её можно
+было ставить/обновлять через HACS как обычное дополнение, без ручного патчинга чужих файлов при
+каждом обновлении).
 
 ## Технологии
 
@@ -211,3 +230,12 @@ upstream-карточка.
 upstream-проекта, на которые опирается эта надстройка (Simple Inventory и simple-inventory-card),
 распространяются по лицензии MIT авторства [Blaine Venturine](https://github.com/blaineventurine) —
 их код в этот репозиторий не включён, поэтому их лицензия и авторство сохраняются отдельно за ними.
+
+[hacs-shield]: https://img.shields.io/badge/HACS-Custom-41BDF5.svg
+[hacs-url]: https://github.com/hacs/integration
+[hacs-action-shield]: https://github.com/kuser8/plan-inventory/actions/workflows/hacs.yml/badge.svg
+[hacs-action-url]: https://github.com/kuser8/plan-inventory/actions/workflows/hacs.yml
+[hassfest-shield]: https://github.com/kuser8/plan-inventory/actions/workflows/hassfest.yml/badge.svg
+[hassfest-url]: https://github.com/kuser8/plan-inventory/actions/workflows/hassfest.yml
+[release-shield]: https://img.shields.io/github/v/release/kuser8/plan-inventory
+[release-url]: https://github.com/kuser8/plan-inventory/releases
