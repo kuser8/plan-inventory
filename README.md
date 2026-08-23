@@ -207,4 +207,7 @@ upstream-карточка.
 
 ## Лицензия
 
-MIT, как и оба upstream-проекта.
+Код этого репозитория передан в общественное достояние по [The Unlicense](./LICENSE). Оба
+upstream-проекта, на которые опирается эта надстройка (Simple Inventory и simple-inventory-card),
+распространяются по лицензии MIT авторства [Blaine Venturine](https://github.com/blaineventurine) —
+их код в этот репозиторий не включён, поэтому их лицензия и авторство сохраняются отдельно за ними.
